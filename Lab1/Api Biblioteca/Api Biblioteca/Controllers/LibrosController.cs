@@ -24,7 +24,14 @@ namespace Api_Biblioteca.Controllers
         [HttpGet("HistorialMovimientos")]
         public async Task<IActionResult> HistorialMovimientos()
         {
-            return this.Ok(this.bibliotecaContext.HistorialMovimientos);
+            var movimientos = this.bibliotecaContext.HistorialMovimientos;
+            return this.Ok(movimientos.Select(h => new HistorialMovimientoDTO
+            {
+                Id = h.Id,
+                NombreLibro = h.Libro.Nombre,
+                Date = h.Date,
+                TipoMovimiento = h.TipoMovimiento.ToString(),
+            })) ;
         }
 
 
@@ -84,7 +91,7 @@ namespace Api_Biblioteca.Controllers
                 IdLibro = libro.Id,
                 Date = DateTime.Now,
                 TipoMovimiento = TipoMovimiento.Prestar,
-            });
+            }) ;
 
             await this.bibliotecaContext.SaveChangesAsync();
             return this.Ok();
